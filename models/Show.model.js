@@ -1,13 +1,12 @@
 const { Schema, model } = require('mongoose');
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const showSchema = new Schema(
 	{
-		title: {
+		name: {
 			type: String,
 			required: [true, 'The TV show must have a title.'],
 		},
-		description: {
+		summary: {
 			type: String,
 			required: [true, 'You need to describe the TV show.'],
 		},
