@@ -28,6 +28,8 @@ router.post("/shows", (req, res, next) => {
     });
 });
 
+//GET get all shows
+
 router.get("/shows", (req, res, next) => {
   Show.find()
     .populate("reviews")
@@ -40,6 +42,8 @@ router.get("/shows", (req, res, next) => {
       });
     });
 });
+
+//GET get a single show
 
 router.get("/shows/:showId", (req, res, next) => {
   const { showId } = req.params;
