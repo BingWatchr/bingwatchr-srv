@@ -5,21 +5,24 @@ const Show = require("../models/Show.model");
 const Review = require("../models/Review.model");
 
 //POST create a new review
-
-router.post("/shows/:showId", (req, res, next) => {
-  const { text, rating } = req.body;
+//we can change this  if we want to create a new review directly from the show
+router.post("/reviews", (req, res, next) => {
+  const { text, rating, showId } = req.body;
 
   const newReview = {
     author: author,
     text: text,
     rating: rating,
-    tvShow: tvShow,
+    tvShow: showId,
   };
 
   Review.create(newReview)
-    .then((response) => {
-      res.status(201).json(response);
+    .then((reviewsFromDB) => {
+      return Show.findByIdAndUpdate(showId, {
+        $push: { reviews: reviewsFromDB._id },
+      });
     })
+    .then((response) => res.status(201).json(response))
     .catch((e) => {
       console.log(e);
       res.status(500).json({ message: "error creating review", error: e });
@@ -27,7 +30,7 @@ router.post("/shows/:showId", (req, res, next) => {
 });
 
 // PUT  Updates a specific review by id
-router.put("/:reviewId", (req, res, next) => {
+router.put("/reviews/:reviewId", (req, res, next) => {
   const { reviewId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(reviewId)) {
@@ -35,11 +38,9 @@ router.put("/:reviewId", (req, res, next) => {
     return;
   }
 
-  const newDetails = {
-    author: author,
+  const newDetails = {  
     text: text,
     rating: rating,
-    tvShow: tvShow,
   };
 
   Project.findByIdAndUpdate(reviewId, newDetails, { new: true })
@@ -54,7 +55,7 @@ router.put("/:reviewId", (req, res, next) => {
 });
 
 // DELETE  Delete a specific review by id
-router.delete("/:reviewId", (req, res, next) => {
+router.delete("/reviews/:reviewId", (req, res, next) => {
   const { reviewId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(reviewId)) {
