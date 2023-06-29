@@ -1,35 +1,56 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 
-const Show = require("../models/Show.model");
 const Review = require("../models/Review.model");
+const Show = require("../models/Show.model");
 
-//POST create a new review
-//we can change this  if we want to create a new review directly from the show
-router.post("/reviews", (req, res, next) => {
-  const { text, rating, showId } = req.body;
+//  GET /api/reviews/:reviewId  -  Get details of a specific review by id
+router.get("/reviews/:reviewId", (req, res, next) => {
+  const { reviewId } = req.params;
 
-  const newReview = {
-    author: author,
-    text: text,
-    rating: rating,
-    tvShow: showId,
-  };
+  if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
 
-  Review.create(newReview)
-    .then((reviewsFromDB) => {
-      return Show.findByIdAndUpdate(showId, {
-        $push: { reviews: reviewsFromDB._id },
+  Review.findById(reviewId)
+    .then((review) => res.json(review))
+    .catch((err) => {
+      console.log("error getting details of a review", err);
+      res.status(500).json({
+        message: "error getting details of a review",
+        error: err,
       });
-    })
-    .then((response) => res.status(201).json(response))
-    .catch((e) => {
-      console.log(e);
-      res.status(500).json({ message: "error creating review", error: e });
     });
 });
 
-// PUT  Updates a specific review by id
+//  POST /api/reviews  -  Creates a new task
+router.post("/reviews", (req, res, next) => {
+  const { author, text, showId } = req.body;
+
+  const newShowDetails = {
+    author: author,
+    text: text,
+    show: showId,
+  };
+
+  Review.create(newReviewDetails)
+    .then((reviewFromDB) => {
+      return Show.findByIdAndUpdate(reviewId, {
+        $push: { reviews: reviewFromDB._id },
+      });
+    })
+    .then((response) => res.status(201).json(response))
+    .catch((err) => {
+      console.log("error creating a new review", err);
+      res.status(500).json({
+        message: "error creating a new review",
+        error: err,
+      });
+    });
+});
+
+// PUT /api/reviews/:reviewId  -  Updates a specific review by id
 router.put("/reviews/:reviewId", (req, res, next) => {
   const { reviewId } = req.params;
 
@@ -38,23 +59,23 @@ router.put("/reviews/:reviewId", (req, res, next) => {
     return;
   }
 
-  const newDetails = {  
-    text: text,
-    rating: rating,
+  const newDetails = {
+    author: req.body.author,
+    text: req.body.text,
   };
 
-  Project.findByIdAndUpdate(reviewId, newDetails, { new: true })
+  Review.findByIdAndUpdate(reviewId, newDetails, { new: true })
     .then((updatedReview) => res.json(updatedReview))
-    .catch((e) => {
-      console.log("error updating review", e);
+    .catch((err) => {
+      console.log("error updating review", err);
       res.status(500).json({
         message: "error updating review",
-        error: e,
+        error: err,
       });
     });
 });
 
-// DELETE  Delete a specific review by id
+// DELETE /api/reviews/:reviewId  -  Delete a specific review by id
 router.delete("/reviews/:reviewId", (req, res, next) => {
   const { reviewId } = req.params;
 
@@ -63,18 +84,18 @@ router.delete("/reviews/:reviewId", (req, res, next) => {
     return;
   }
 
-  Project.findByIdAndRemove(reviewId)
+  Task.findByIdAndRemove(reviewId)
     .then((deletedReview) => {})
     .then(() =>
       res.json({
-        message: `Review with id ${reviewId} was removed successfully.`,
+        message: `Review with id ${reviewId} were removed successfully.`,
       })
     )
-    .catch((e) => {
-      console.log("error deleting review", e);
+    .catch((err) => {
+      console.log("error deleting review", err);
       res.status(500).json({
         message: "error deleting review",
-        error: e,
+        error: err,
       });
     });
 });
