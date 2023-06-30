@@ -19,13 +19,11 @@ db.once("open", async () => {
     const response = await axios.get("https://api.tvmaze.com/shows");
     const shows = response.data;
 
-	const { image: { medium, ...rest }, ...restData } = shows;
-
-	const updatedData = {
-	  ...restData,
-	  image: medium,
-	  ...rest
-	};
+// Mapping the array and updating the value of image
+const updatedData = shows.map(item => ({
+	...item,
+	image: item.image.medium
+  }));
   
 console.log(updatedData)
     // Clear existing data from the collection
