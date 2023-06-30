@@ -29,9 +29,37 @@ router.post("/reviews", (req, res, next) => {
     });
 });
 
+router.get('/reviews/edit/:reviewId', (req, res, next) => {
+	const { reviewId } = req.params;
+	if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+		res.status(400).json({ message: 'Specified id is not valid' });
+		return;
+	}
+
+	Review.findById(reviewId)
+		.populate('author')
+		.populate('tvShow')
+		.then((response) => {
+			console.log(response);
+			res.json(response);
+		})
+		.catch((err) => {
+			console.log('error getting list of shows', err);
+			res.status(500).json({
+				message: 'error getting list of shows',
+				error: err,
+			});
+		});
+});
+
 // PUT  Updates a specific review by id
+<<<<<<< HEAD
 router.put("/reviews/:reviewId", (req, res, next) => {
   const { reviewId } = req.params;
+=======
+router.put('/reviews/edit/:reviewId', (req, res, next) => {
+	const { reviewId } = req.params;
+>>>>>>> 3b26a2c2708ee3ccb1561c106d0f7612aaee7767
 
   if (!mongoose.Types.ObjectId.isValid(reviewId)) {
     res.status(400).json({ message: "Specified id is not valid" });
@@ -43,6 +71,7 @@ router.put("/reviews/:reviewId", (req, res, next) => {
     rating: rating,
   };
 
+<<<<<<< HEAD
   Project.findByIdAndUpdate(reviewId, newDetails, { new: true })
     .then((updatedReview) => res.json(updatedReview))
     .catch((e) => {
@@ -52,6 +81,17 @@ router.put("/reviews/:reviewId", (req, res, next) => {
         error: e,
       });
     });
+=======
+	Show.findByIdAndUpdate(reviewId, newDetails, { new: true })
+		.then((updatedReview) => res.json(updatedReview))
+		.catch((e) => {
+			console.log('error updating review', e);
+			res.status(500).json({
+				message: 'error updating review',
+				error: e,
+			});
+		});
+>>>>>>> 3b26a2c2708ee3ccb1561c106d0f7612aaee7767
 });
 
 // DELETE  Delete a specific review by id
@@ -63,6 +103,7 @@ router.delete("/reviews/:reviewId", (req, res, next) => {
     return;
   }
 
+<<<<<<< HEAD
   Project.findByIdAndRemove(reviewId)
     .then((deletedReview) => {})
     .then(() =>
@@ -77,6 +118,22 @@ router.delete("/reviews/:reviewId", (req, res, next) => {
         error: e,
       });
     });
+=======
+	Show.findByIdAndRemove(reviewId)
+		.then((deletedReview) => {})
+		.then(() =>
+			res.json({
+				message: `Review with id ${reviewId} was removed successfully.`,
+			})
+		)
+		.catch((e) => {
+			console.log('error deleting review', e);
+			res.status(500).json({
+				message: 'error deleting review',
+				error: e,
+			});
+		});
+>>>>>>> 3b26a2c2708ee3ccb1561c106d0f7612aaee7767
 });
 
 module.exports = router;
