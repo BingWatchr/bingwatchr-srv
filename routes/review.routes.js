@@ -7,7 +7,7 @@ const Review = require('../models/Review.model');
 //POST create a new review
 //we can change this  if we want to create a new review directly from the show
 router.post('/reviews', (req, res, next) => {
-	const { text, rating, showId } = req.body;
+	const { author, text, rating, showId } = req.body;
 
 	const newReview = {
 		author: author,
