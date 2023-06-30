@@ -55,19 +55,24 @@ router.get('/reviews/edit/:reviewId', (req, res, next) => {
 // PUT  Updates a specific review by id
 router.put('/reviews/edit/:reviewId', (req, res, next) => {
 	const { reviewId } = req.params;
-
+	const { text, rating } = req.body;
 	if (!mongoose.Types.ObjectId.isValid(reviewId)) {
 		res.status(400).json({ message: 'Specified id is not valid' });
 		return;
 	}
+	console.log('text:' + text);
+	console.log('rating:' + rating);
 
 	const newDetails = {
 		text: text,
 		rating: rating,
 	};
 
-	Show.findByIdAndUpdate(reviewId, newDetails, { new: true })
-		.then((updatedReview) => res.json(updatedReview))
+	Review.findByIdAndUpdate(reviewId, newDetails, { new: true })
+		.then((updatedReview) => {
+			console.log('updated review ' + updatedReview);
+			res.json(updatedReview);
+		})
 		.catch((e) => {
 			console.log('error updating review', e);
 			res.status(500).json({
@@ -86,18 +91,18 @@ router.delete('/reviews/:reviewId', (req, res, next) => {
 		return;
 	}
 
-	Show.findByIdAndRemove(reviewId)
-		.then((deletedReview) => {})
-		.then(() =>
+	Review.findByIdAndRemove(reviewId)
+		.then((deletedReview) => {
+			console.log(deletedReview + 'Deleted');
 			res.json({
-				message: `Review with id ${reviewId} was removed successfully.`,
-			})
-		)
-		.catch((e) => {
-			console.log('error deleting review', e);
+				message: `Review with id ${reviewId} were removed successfully.`,
+			});
+		})
+		.catch((err) => {
+			console.log('error deleting task', err);
 			res.status(500).json({
-				message: 'error deleting review',
-				error: e,
+				message: 'error deleting task',
+				error: err,
 			});
 		});
 });
