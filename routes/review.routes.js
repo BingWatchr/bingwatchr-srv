@@ -29,8 +29,31 @@ router.post('/reviews', (req, res, next) => {
 		});
 });
 
+router.get('/reviews/edit/:reviewId', (req, res, next) => {
+	const { reviewId } = req.params;
+	if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+		res.status(400).json({ message: 'Specified id is not valid' });
+		return;
+	}
+
+	Review.findById(reviewId)
+		.populate('author')
+		.populate('tvShow')
+		.then((response) => {
+			console.log(response);
+			res.json(response);
+		})
+		.catch((err) => {
+			console.log('error getting list of shows', err);
+			res.status(500).json({
+				message: 'error getting list of shows',
+				error: err,
+			});
+		});
+});
+
 // PUT  Updates a specific review by id
-router.put('/reviews/:reviewId', (req, res, next) => {
+router.put('/reviews/edit/:reviewId', (req, res, next) => {
 	const { reviewId } = req.params;
 
 	if (!mongoose.Types.ObjectId.isValid(reviewId)) {
@@ -43,7 +66,7 @@ router.put('/reviews/:reviewId', (req, res, next) => {
 		rating: rating,
 	};
 
-	Project.findByIdAndUpdate(reviewId, newDetails, { new: true })
+	Show.findByIdAndUpdate(reviewId, newDetails, { new: true })
 		.then((updatedReview) => res.json(updatedReview))
 		.catch((e) => {
 			console.log('error updating review', e);
@@ -63,7 +86,7 @@ router.delete('/reviews/:reviewId', (req, res, next) => {
 		return;
 	}
 
-	Project.findByIdAndRemove(reviewId)
+	Show.findByIdAndRemove(reviewId)
 		.then((deletedReview) => {})
 		.then(() =>
 			res.json({
