@@ -1,7 +1,5 @@
 const router = require('express').Router();
-
 const mongoose = require('mongoose');
-
 const Show = require('../models/Show.model');
 const Review = require('../models/Review.model');
 
