@@ -23,10 +23,12 @@ db.once("open", async () => {
     const updatedData = shows.map((item) => ({
       ...item,
       image: item.image.medium,
-      rating: Math.round(item.rating.average / 2),
+      /* rating: Math.round(item.rating.average / 2), */
+      rating: 0,
+      weight: 0,
     }));
 
-    console.log(updatedData);
+    /* console.log(updatedData); */
     // Clear existing data from the collection
     await db.collection("shows").deleteMany({});
 
