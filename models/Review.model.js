@@ -8,9 +8,9 @@ const reviewSchema = new Schema(
 		},
 		rating: {
 			type: Number,
-			required: [true, 'Please rate the TV show.'],
+			required: [true, 'Please rate the Show.'],
 			min: 1,
-			max: 10,
+			max: 5,
 		},
 
 		tvShow: [{ type: Schema.Types.ObjectId, ref: 'Show' }],

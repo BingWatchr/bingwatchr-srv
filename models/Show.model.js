@@ -20,6 +20,12 @@ const showSchema = new Schema(
 			type: String,
 		},
 		reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+		rating: {
+			type: Number,
+		},
+		weight: {
+			type: Number,
+		},
 		favorites: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 	},
 	{

@@ -1,9 +1,6 @@
 const router = require('express').Router();
-
 const mongoose = require('mongoose');
-
 const Show = require('../models/Show.model');
-const Review = require('../models/Review.model');
 
 //  POST /api/shows  -  Creates a new show
 router.post('/shows', (req, res, next) => {
