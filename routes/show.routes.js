@@ -29,7 +29,7 @@ router.post('/shows', (req, res, next) => {
 // GET /api/shows -  Retrieves all of the shows
 router.get('/shows', (req, res, next) => {
 	Show.find()
-		.populate('reviews')
+		.populate('reviews', 'author')
 		.then((response) => {
 			res.json(response);
 		})
@@ -52,7 +52,7 @@ router.get('/shows/:showId', (req, res, next) => {
 	}
 
 	Show.findById(showId)
-		.populate('reviews')
+		.populate({ path: 'reviews', populate: { path: 'author' } })
 		.then((show) => res.json(show))
 		.catch((err) => {
 			console.log('error getting details of a show', err);
@@ -87,6 +87,40 @@ router.delete('/shows/:showId', (req, res, next) => {
 				message: 'error deleting show',
 				error: err,
 			});
+		});
+});
+
+router.put('/shows/:showId/like/:likedBy', (req, res, next) => {
+	const { showId, likedBy } = req.params;
+	Show.findByIdAndUpdate(
+		showId,
+		{
+			$addToSet: { favorites: likedBy },
+		},
+		{ new: true }
+	)
+		.then((result) => {
+			return res.json(result);
+		})
+		.catch((e) => {
+			res.status(422).json({ error: err });
+		});
+});
+
+router.put('/shows/:showId/unlike/:likedBy', (req, res, next) => {
+	const { showId, likedBy } = req.params;
+	Show.findByIdAndUpdate(
+		showId,
+		{
+			$pull: { favorites: likedBy },
+		},
+		{ new: true }
+	)
+		.then((result) => {
+			return res.json(result);
+		})
+		.catch((e) => {
+			res.status(422).json({ error: err });
 		});
 });
 
