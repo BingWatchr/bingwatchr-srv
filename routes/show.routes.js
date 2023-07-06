@@ -39,6 +39,22 @@ router.get("/shows", (req, res, next) => {
     });
 });
 
+// GET /api/random -  Get a random show
+router.get("/shows/random", (req, res, next) => {
+  Show.aggregate([{ $sample: { size: 1 } }])
+    .then((response) => {
+      console.log('response: ' + response)
+      res.json(response);
+    })
+    .catch((err) => {
+      console.log("error getting rnd show", err);
+      res.status(500).json({
+        message: "error getting rnd show",
+        error: err,
+      });
+    });
+});
+
 //  GET /api/shows/:showId  -  Get details of a specific show by id
 router.get("/shows/:showId", (req, res, next) => {
   const { showId } = req.params;
