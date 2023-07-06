@@ -121,4 +121,21 @@ router.put('/shows/:showId/unlike/:likedBy', (req, res, next) => {
 		});
 });
 
+router.get('/shows/tag/:type/:filtername', (req, res, next) => {
+	const { filtername, type } = req.params;
+	// const filterType = type.charAt(0).toUpperCase() + type.slice(1);
+	const filterTag = new RegExp(filtername, 'i');
+	console.log(filterTag);
+	console.log(type);
+
+	Show.find({ [type]: { $regex: filterTag } })
+		.then((result) => {
+			console.log(result);
+			return res.json(result);
+		})
+		.catch((e) => {
+			res.status(422).json({ error: err });
+		});
+});
+
 module.exports = router;
