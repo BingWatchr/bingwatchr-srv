@@ -42,8 +42,7 @@ router.get("/shows", (req, res, next) => {
 // GET /api/random -  Get a random show
 router.get("/shows/random", (req, res, next) => {
   Show.aggregate([{ $sample: { size: 1 } }])
-    .then((response) => {
-      console.log('response: ' + response)
+    .then((response) => {     
       res.json(response);
     })
     .catch((err) => {
